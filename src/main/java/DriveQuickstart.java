@@ -22,7 +22,7 @@ import java.util.Collections;
 import java.util.List;
 
 public class DriveQuickstart {
-    private static final String APPLICATION_NAME = "Google Drive API Java Quickstart";
+    private static final String APPLICATION_NAME = "ProjectLostPets";
     private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
     private static final String TOKENS_DIRECTORY_PATH = "tokens";
 
@@ -56,10 +56,10 @@ public class DriveQuickstart {
     
     private static void UploadFile(/*String path*/Drive service) throws IOException {
     	File fileMetadata = new File();
-    	fileMetadata.setName("Koala.jpeg");
+    	fileMetadata.setName("Koala.jpg");
     	fileMetadata.setMimeType("image/jpeg");
     		//service.files().
-    	java.io.File filePath = new java.io.File("Koala.jpeg");
+    	java.io.File filePath = new java.io.File("Koala.jpg");
     	FileContent mediaContent = new FileContent("image/jpeg", filePath);
     	File file = service.files().create(fileMetadata, mediaContent)
     	    .setFields("id")
@@ -74,14 +74,16 @@ public class DriveQuickstart {
                 .setApplicationName(APPLICATION_NAME)
                 .build();
         
-        File fileMetadata = new File();
+        /*File fileMetadata = new File();
         fileMetadata.setName("Koala.jpg");
         java.io.File filePath = new java.io.File("Koala.jpg");
         FileContent mediaContent = new FileContent("image/jpeg", filePath);
         File file1 = service.files().create(fileMetadata, mediaContent)
             .setFields("id")
             .execute();
-        System.out.println("File ID: " + file1.getId());
+        System.out.println("File ID: " + file1.getId());*/
+        
+        UploadFile(service);
         
         // Print the names and IDs for up to 10 files.
         FileList result = service.files().list()
