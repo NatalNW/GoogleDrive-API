@@ -1,4 +1,4 @@
-package com.example.Main.Config;
+package com.example.Main.Model;
 
 import com.google.api.client.auth.oauth2.Credential;
 import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInstalledApp;
@@ -24,19 +24,22 @@ import java.security.GeneralSecurityException;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.JFileChooser;
+import org.springframework.web.multipart.MultipartFile;
 
-public class GoogleDriveConfig {
+//import javax.swing.JFileChooser;
+
+public class GoogleDriveModel {
 	private static final String APPLICATION_NAME = "ProjectLostPets";
 	private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
 	private static final String TOKENS_DIRECTORY_PATH = "tokens";
 	private static final List<String> SCOPES = Collections.singletonList(DriveScopes.DRIVE);
 	private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
+	@SuppressWarnings("unused")
 	private static BufferedImage imagem;
 
 	private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
 		// Load client secrets.
-		InputStream in = GoogleDriveConfig.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
+		InputStream in = GoogleDriveModel.class.getResourceAsStream(CREDENTIALS_FILE_PATH);
 		GoogleClientSecrets clientSecrets = GoogleClientSecrets.load(JSON_FACTORY, new InputStreamReader(in));
 
 		// Build flow and trigger user authorization request.
@@ -48,11 +51,11 @@ public class GoogleDriveConfig {
 		return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
 	}
 
-	public static void UploadFile(java.io.File arq, Drive service) throws IOException {
+	public void uploadFile(MultipartFile file2, Drive service) throws IOException {
 		File fileMetadata = new File();
-		fileMetadata.setName(arq.getName());
+		fileMetadata.setName(file2.getName());
 		fileMetadata.setMimeType("image/jpeg");
-		java.io.File filePath = new java.io.File(arq.getAbsolutePath());
+		java.io.File filePath = new java.io.File(file2.getOriginalFilename());
 		FileContent mediaContent = new FileContent("image/jpeg", filePath);
 		File file = service.files().create(fileMetadata, mediaContent).setFields("id").execute();
 		System.out.println("File ID: " + file.getId());
