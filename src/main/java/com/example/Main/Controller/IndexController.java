@@ -1,5 +1,6 @@
 package com.example.Main.Controller;
 
+import java.io.File;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
@@ -18,19 +19,20 @@ public class IndexController {
 
 	@RequestMapping("/")
 	public String index() {
-		System.out.println("index");
 		return "index";
 	}
 
 	@RequestMapping(value = "/upload", method = RequestMethod.POST)
-	public String uploadImages(Model model, @RequestParam(value = "file") MultipartFile file) {
-		System.out.println("To Aqui");
-		try {
-			upload.uploadFile(file, GoogleDriveModel.getService());
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (GeneralSecurityException e) {
-			e.printStackTrace();
+	public String uploadImages(Model model, @RequestParam(value = "files") MultipartFile[] files) {
+	//	System.out.println("To Aqui");
+		for (MultipartFile file : files) {
+			try {
+				File image = new File(file.getOriginalFilename());
+			//	System.out.println("Java.io\n"+image.getAbsolutePath()+"\n"+image.getPath()+"\n"+image.getCanonicalPath()+"\n"+image.getName());
+				upload.uploadFile(image, GoogleDriveModel.getService());
+			} catch (IOException | GeneralSecurityException e) {
+				e.printStackTrace();
+			}
 		}
 		model.addAttribute("msg", "Successfully uploaded file");
 		return "upload";

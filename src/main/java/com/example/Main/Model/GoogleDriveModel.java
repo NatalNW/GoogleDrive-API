@@ -34,8 +34,6 @@ public class GoogleDriveModel {
 	private static final String TOKENS_DIRECTORY_PATH = "tokens";
 	private static final List<String> SCOPES = Collections.singletonList(DriveScopes.DRIVE);
 	private static final String CREDENTIALS_FILE_PATH = "/credentials.json";
-	@SuppressWarnings("unused")
-	private static BufferedImage imagem;
 
 	private static Credential getCredentials(final NetHttpTransport HTTP_TRANSPORT) throws IOException {
 		// Load client secrets.
@@ -51,11 +49,11 @@ public class GoogleDriveModel {
 		return new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
 	}
 
-	public void uploadFile(MultipartFile file2, Drive service) throws IOException {
+	public void uploadFile(java.io.File image, Drive service) throws IOException {
 		File fileMetadata = new File();
-		fileMetadata.setName(file2.getName());
+		fileMetadata.setName(image.getName());
 		fileMetadata.setMimeType("image/jpeg");
-		java.io.File filePath = new java.io.File(file2.getOriginalFilename());
+		java.io.File filePath = new java.io.File(image.getAbsolutePath());
 		FileContent mediaContent = new FileContent("image/jpeg", filePath);
 		File file = service.files().create(fileMetadata, mediaContent).setFields("id").execute();
 		System.out.println("File ID: " + file.getId());
@@ -86,7 +84,7 @@ public class GoogleDriveModel {
 	}
 
 //	public static void main(String... args) throws IOException, GeneralSecurityException {
-
+//
 //		JFileChooser fc = new JFileChooser();
 //		int res = fc.showOpenDialog(null);
 //
@@ -94,8 +92,8 @@ public class GoogleDriveModel {
 //			java.io.File arquivo = fc.getSelectedFile();
 //			UploadFile(arquivo, getService());
 //		} else
-//			System.out.println("Voce nao selecionou nenhum arquivo.");
-
+//			System.out.println("Voce nao selecionou o arquivo.");
+//
 //		listFiles(getService());
 //	}
 }
