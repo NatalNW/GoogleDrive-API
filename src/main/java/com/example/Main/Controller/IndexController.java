@@ -1,6 +1,6 @@
 package com.example.Main.Controller;
 
-import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.security.GeneralSecurityException;
 
@@ -12,10 +12,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.example.Main.Model.GoogleDriveModel;
+import com.google.api.client.http.FileContent;
+import com.google.api.services.drive.model.File;
 
 @Controller
 public class IndexController {
-	private GoogleDriveModel upload = new GoogleDriveModel();
+	//private GoogleDriveModel upload = new GoogleDriveModel();
 
 	@RequestMapping("/")
 	public String index() {
@@ -27,9 +29,13 @@ public class IndexController {
 	//	System.out.println("To Aqui");
 		for (MultipartFile file : files) {
 			try {
-				File image = new File(file.getOriginalFilename());
-			//	System.out.println("Java.io\n"+image.getAbsolutePath()+"\n"+image.getPath()+"\n"+image.getCanonicalPath()+"\n"+image.getName());
-				upload.uploadFile(image, GoogleDriveModel.getService());
+				File fileMetadata = new File();
+	        	fileMetadata.setName(file.getOriginalFilename());
+	        	fileMetadata.setMimeType("image/*");
+	        	java.io.File filePath = this.convert(file);
+	        	FileContent mediaContent = new FileContent("image/*", filePath);
+	        	GoogleDriveModel.getService().files().create(fileMetadata, mediaContent).setFields("id").execute();
+	        	filePath.delete();
 			} catch (IOException | GeneralSecurityException e) {
 				e.printStackTrace();
 			}
@@ -37,4 +43,14 @@ public class IndexController {
 		model.addAttribute("msg", "Successfully uploaded file");
 		return "upload";
 	}
+	
+	   private java.io.File convert(MultipartFile file) throws IOException {
+	    	java.io.File convFile = new java.io.File(file.getOriginalFilename());
+	        convFile.createNewFile();
+	        FileOutputStream fos = new FileOutputStream(convFile);
+	        fos.write(file.getBytes());
+	        fos.close();
+	        return convFile;
+	    }
+	
 }
