@@ -1,0 +1,3 @@
+2019-05-13 12:10:28 jdbc[3]: exception
+org.h2.jdbc.JdbcSQLException: Table "USUARIOS" not found; SQL statement:
+select * from Usuarios [42102-197]
